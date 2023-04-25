@@ -25,3 +25,21 @@ BEGIN
   RETURN employee_data;
 END;
 $$;
+
+
+# function with out
+create or replace function get_film_stat(
+    out min_len int,
+    out max_len int,
+    out avg_len numeric) 
+language plpgsql
+as $$
+begin
+  
+  select min(length),
+         max(length),
+		 avg(length)::numeric(5,1)
+  into min_len, max_len, avg_len
+  from film;
+
+end;$$
