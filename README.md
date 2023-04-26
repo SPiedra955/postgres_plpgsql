@@ -24,6 +24,12 @@ It's a procedural language that allows you to develop complex functions and stor
 
 ### Scripts
 
+### [ddl.sql](https://github.com/SPiedra955/postgres_plpgsql/blob/main/scripts/ddl.sql)
+ This file contains the script to generate the database in postgres and the type of data to be inserted.
+ 
+### [dml.sql](https://github.com/SPiedra955/postgres_plpgsql/blob/main/scripts/dml.sql)
+With this script we can insert some data.
+
 ### Objectives
 In this project we have to use:
 - Functions
