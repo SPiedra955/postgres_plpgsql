@@ -10,7 +10,11 @@
    * [**Function with parameters**](#function-with-parameters)
  * [**Procedures**](#procedures)
  * [**Triggers**](#triggers)
-
+   * [**Tables**](#tables)
+   * [**Insert trigger**](#insert-trigger)
+   * [**Update trigger**](#update-trigger)
+ * [**Bibliography**](#bibliography)
+ 
 # Introduction
 
 ### PlpgSQL
@@ -178,7 +182,13 @@ _Expected output_:
 
 # Triggers
 
-### Table
+### Tables
+
+First we have to create the following tables, in which we are going to store the data that will be inserted or updated depending on the command we execute.
+
+* The table __employee_summer__: is for store the employees hired during the summer season.
++ the table __employee_update__: is for store changes in the tables.
+
 ````
 CREATE TABLE employee_summer(
 employee_id INT NOT NULL,
@@ -194,7 +204,9 @@ hire_date TIMESTAMP(6) NOT NULL);
 
 ````
 
-### INSERT TRIGGER
+### Insert trigger
+
+As its name indicates, to create this trigger we have to create a function where we set the parameters we are going to insert and specify in the ```RETURN``` clause the word TRIGGER. ```OLD``` and ```NEW``` represent the states of the row in the table before or after the triggering event.
 
 ```
 CREATE OR REPLACE FUNCTION summer_employees_insert()
@@ -209,20 +221,36 @@ END;
 $$;
 ```
 
+In the function below we specify the timing that cause the trigger to fire. It can be ````BEFORE```` or ````AFTER```` an event occurs,the event can be ````INSERT```` , ````DELETE````, ````UPDATE```` or ````TRUNCATE```` in this case we use ````INSERT```` and ````UPDATE````.
+
+We use the ON keyword for specify the name of the table associated with the trigger.
+
+A row-level trigger that is specified by the ````FOR EACH ROW```` clause and we use the above function to complete the trigger.
+
+
+
 ```
 CREATE TRIGGER employee_insert_trigger
 AFTER INSERT ON employees
 FOR EACH ROW
 EXECUTE FUNCTION summer_employees_insert();
 ```
+_Values to insert_:
 
-INSERT INTO employees(employee_id,first_name,last_name,email,phone_number,hire_date,job_id,salary,manager_id,department_id) VALUES (207,'Will','Git','wgitz@sqltutorial.org','518.023.9771','1990-05-08',1,1300.00,205,9);
+````
+INSERT INTO employees(employee_id,first_name,last_name,email,phone_number,hire_date,job_id,salary,manager_id,department_id) 
+VALUES (207,'Will','Git','wgitz@sqltutorial.org','518.023.9771','1990-05-08',1,1300.00,205,9);
+````
+_Expected output_:
+
+Check values in the table __employee_summer__:
 
 ![image](https://user-images.githubusercontent.com/114516225/234704847-ba969f9d-f467-478a-ac88-164cc9e85178.png)
 
 
-### UPDATE TRIGGER
+### Update trigger
 
+This function works as the [previous function](https://github.com/SPiedra955/postgres_plpgsql/edit/main/README.md#insert-trigger), only the name is changed.
 
 ```
 CREATE OR REPLACE FUNCTION employees_update()
@@ -236,6 +264,7 @@ RETURN NEW;
 END;
 $$;
 ```
+This [trigger](https://github.com/SPiedra955/postgres_plpgsql/edit/main/README.md#insert-trigger) it's the same as the previous one, only the timing is change with ```AFTER``` and the event is ```UPDATE``` also the table which stores the data.
 
 ```
 CREATE TRIGGER employee_update_trigger
@@ -244,18 +273,20 @@ FOR EACH ROW
 EXECUTE FUNCTION employees_update();
 CREATE TRIGGER
 ```
+_Values to update_:
 
+````
 UPDATE employees SET last_name = 'Gilbert' WHERE employee_id = 207;
+````
+
+_Check the values in the table __employee_update__:_
 
 ![image](https://user-images.githubusercontent.com/114516225/234704955-91194b7f-7e9c-404e-9422-143e9e8f5818.png)
 
 
 # Bibliography
 
-https://www.enterprisedb.com/postgres-tutorials/10-examples-postgresql-stored-procedures
-
-
-
-
-
-
+* [10 PostgreSQL examples to stored procedures](https://www.enterprisedb.com/postgres-tutorials/10-examples-postgresql-stored-procedures)
+* [PostgreSQL Triggers](https://w3resource.com/PostgreSQL/postgresql-triggers.php)
+* [PostgreSQL PLPGSQL tutorial](https://www.postgresqltutorial.com/postgresql-plpgsql/)
+* [Sample database](https://www.sqltutorial.org/sql-sample-database/)
