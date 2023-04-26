@@ -13,6 +13,7 @@
    * [**Tables**](#tables)
    * [**Insert trigger**](#insert-trigger)
    * [**Update trigger**](#update-trigger)
+   * [**Alter trigger**](#alter-trigger)
  * [**Bibliography**](#bibliography)
  
 # Introduction
@@ -283,6 +284,37 @@ _Check the values in the table __employee_update__:_
 
 ![image](https://user-images.githubusercontent.com/114516225/234704955-91194b7f-7e9c-404e-9422-143e9e8f5818.png)
 
+### Alter trigger
+
+This keyword ```ALTER``` is for ````RENAME````, ```ENABLE``` ,```DISABLE``` a trigger.
+
+* RENAME:
+
+````
+ALTER TRIGGER employee_update_trigger
+ON employees
+RENAME TO new_employee_update_trigger;
+````
+
+Execute ```\dS employees```
+
+_Expected output_:
+
+![image](https://user-images.githubusercontent.com/114516225/234722190-0efed42b-4949-4031-b66b-1d088fbe0877.png)
+
+* ENABLE(default):
+
+````
+ALTER TABLE employees
+ENABLE TRIGGER new_employee_update_trigger;
+````
+
+* DISABLE
+
+````
+ALTER TABLE employees
+DISABLE TRIGGER new_employee_update_trigger;
+````
 
 # Bibliography
 
