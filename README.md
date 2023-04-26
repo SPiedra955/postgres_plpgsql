@@ -127,6 +127,42 @@ _Expected output_:
 
 ![image](https://user-images.githubusercontent.com/114516225/234425265-e6769685-4a29-441d-866e-c3994e3c1766.png)
 
+# Cursors
+
+````
+ CREATE OR REPLACE FUNCTION get_parent_son(
+    letter VARCHAR)
+RETURNS TEXT
+AS
+$$
+DECLARE
+    names TEXT DEFAULT '';
+    employee_dependents RECORD;
+    name_dependents RECORD;
+    employee_dependents_cursor CURSOR(letter_param VARCHAR) FOR
+        SELECT e.first_name, e.last_name, d.first_name
+        FROM employees e
+        INNER JOIN dependents d ON e.employee_id = d.employee_id
+        WHERE e.first_name LIKE '%' || letter_param || '%';
+BEGIN
+    OPEN employee_dependents_cursor(letter);
+    LOOP
+        FETCH employee_dependents_cursor INTO employee_dependents;
+        EXIT WHEN NOT FOUND;
+        FETCH employee_dependents_cursor INTO name_dependents;
+        EXIT WHEN NOT FOUND;
+        IF employee_dependents.first_name LIKE '%' || letter || '%' THEN
+            names := names || 'EMPLOYEE: ' || employee_dependents.first_name || ' ' || employee_dependents.last_name
+            || '...DEPENDENT: ' ||  name_dependents.first_name || ' ';
+        END IF;
+    END LOOP;
+    CLOSE employee_dependents_cursor;
+    RETURN names;
+END;
+$$ LANGUAGE plpgsql;
+
+````
+
 # Bibliography
 
 https://www.enterprisedb.com/postgres-tutorials/10-examples-postgresql-stored-procedures
