@@ -9,6 +9,7 @@
    * [**Function without parameters**](#function-without-parameters)
    * [**Function with parameters**](#function-with-parameters)
  * [**Procedures**](#procedures)
+ * [**Triggers**](#triggers)
 
 # Introduction
 
@@ -75,31 +76,33 @@ This function returns a result set with the columns __"country_name"__ and __"re
 
 The ```RETURNS TABLE``` clause defines the structure of the result table that the function will return. In this case, the results table has two columns: __"country_name"__ and __"region_name"__, both of type VARCHAR.
 
-Within the body of the function, the ```RETURN QUERY``` clause is used to return a result set consisting of the __"country_name"__ and __"region_name"__ columns of the __"countries"__ table joined to the __"regions"__ table based on the __"region_id"__ field. The ```WHERE``` clause is used to filter the query results and search for partial matches of the search string in the __country_name__ column.
+Within the body of the function, the ```RETURN QUERY``` clause is used to return a result set consisting of the columns of the __"countries"__ table joined to the __"regions"__ table based on the __"region_id"__ field. The ```WHERE``` clause is used to filter the query results and search for partial matches of the search string in the __country_name__ column.
+
+In short, this query returns the country in which our company has a branch office starting with the given entry and the name of the continent to which it belongs.
 
 ````
- CREATE OR REPLACE FUNCTION location_data(
-    letter VARCHAR
-)
+CREATE OR REPLACE FUNCTION location_data(
+letter VARCHAR)
 RETURNS TABLE (country_name VARCHAR, region_name VARCHAR)
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    RETURN QUERY
-    SELECT c.country_name, r.region_name
-    FROM countries c
-    INNER JOIN regions r ON c.region_id = r.region_id
-    WHERE c.country_name LIKE '%' || letter || '%';
+RETURN QUERY
+SELECT c.country_name, r.region_name
+FROM countries c
+INNER JOIN regions r ON c.region_id = r.region_id
+WHERE c.country_name LIKE UPPER('%' || letter || '%');
 END;
 $$;
 ````
+
 _Expected output_:
 
-![image](https://user-images.githubusercontent.com/114516225/234418084-6a14b15c-b549-4d63-a6fc-2dcecd795c6a.png)
+![image](https://user-images.githubusercontent.com/114516225/234629067-248ff852-a07d-4b3d-b0d2-86333e0c0037.png)
 
 # Procedures
 
-A procedure is a named block that does a specific task. PL/SQL procedure allows you to encapsulate complex business logic and reuse it in both database layer and application layer.
+```Procedure``` is a named block that does a specific task. PL/SQL procedure allows you to encapsulate complex business logic and reuse it in both database layer and application layer.
 
 A ```record``` variable is a variable that contains only one row of a result set.
 
@@ -120,50 +123,67 @@ END LOOP;
 END;
 $$;
 ````
-
 Run this command ```CALL get_employee_contact();```
 
 _Expected output_:
 
-![image](https://user-images.githubusercontent.com/114516225/234425265-e6769685-4a29-441d-866e-c3994e3c1766.png)
+![image](https://user-images.githubusercontent.com/114516225/234638361-308e0a89-8fb2-406b-8706-0b6a22b59c5d.png)
+
+In this case, this query returns all the contacts that matches the value entered.
+
 
 # Cursors
 
+This function that takes a parameter name of type __VARCHAR__ and returns a __TEXT__ value.
+
+Inside the block, variables are defined to store the names of the employees and their dependents. These variables are named __names, employee_name, employee_last_name, dependent_name__, and __dependent_last_name__.
+
+A ```CURSOR``` is defined that will select the __first_name__ and __last_name__ of __employees__, the __first_name__ and __last_name__ of their __dependents__.
+```FETCH``` statement is for create the string concatenation.
+```CHR(10)``` is the ASCII value for start a new line.
+
 ````
- CREATE OR REPLACE FUNCTION get_parent_son(
-    letter VARCHAR)
+CREATE OR REPLACE FUNCTION get_parent_son(
+name VARCHAR)
 RETURNS TEXT
 AS
 $$
 DECLARE
-    names TEXT DEFAULT '';
-    employee_dependents RECORD;
-    name_dependents RECORD;
-    employee_dependents_cursor CURSOR(letter_param VARCHAR) FOR
-        SELECT e.first_name, e.last_name, d.first_name
-        FROM employees e
-        INNER JOIN dependents d ON e.employee_id = d.employee_id
-        WHERE e.first_name LIKE '%' || letter_param || '%';
+names TEXT DEFAULT '';
+employee_name VARCHAR;
+employee_last_name VARCHAR;
+dependent_name VARCHAR;
+dependent_last_name VARCHAR;
+employee_dependents_cursor CURSOR FOR
+SELECT e.first_name, e.last_name, d.first_name, d.last_name
+FROM employees e
+INNER JOIN dependents d ON e.employee_id = d.employee_id
+WHERE CONCAT(e.first_name, ' ', e.last_name) LIKE '%' || name || '%';
 BEGIN
-    OPEN employee_dependents_cursor(letter);
-    LOOP
-        FETCH employee_dependents_cursor INTO employee_dependents;
-        EXIT WHEN NOT FOUND;
-        FETCH employee_dependents_cursor INTO name_dependents;
-        EXIT WHEN NOT FOUND;
-        IF employee_dependents.first_name LIKE '%' || letter || '%' THEN
-            names := names || 'EMPLOYEE: ' || employee_dependents.first_name || ' ' || employee_dependents.last_name
-            || '...DEPENDENT: ' ||  name_dependents.first_name || ' ';
-        END IF;
-    END LOOP;
-    CLOSE employee_dependents_cursor;
-    RETURN names;
+OPEN employee_dependents_cursor;
+LOOP
+FETCH employee_dependents_cursor INTO employee_name, employee_last_name, dependent_name, dependent_last_name;
+EXIT WHEN NOT FOUND;
+names := names || 'EMPLOYEE: ' || employee_name || ' ' || employee_last_name || 
+' --> DEPENDENT: ' ||dependent_name || ' ' || dependent_last_name || ' ' || CHR(10);
+END LOOP;
+CLOSE employee_dependents_cursor;
+RETURN names;
 END;
 $$ LANGUAGE plpgsql;
-
 ````
+_Expected output_:
+
+![image](https://user-images.githubusercontent.com/114516225/234644399-215d9435-335e-418d-9494-2b1098569c20.png)
+
+# Triggers
 
 # Bibliography
 
 https://www.enterprisedb.com/postgres-tutorials/10-examples-postgresql-stored-procedures
+
+
+
+
+
 
