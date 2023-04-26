@@ -178,6 +178,78 @@ _Expected output_:
 
 # Triggers
 
+### Table
+````
+CREATE TABLE employee_summer(
+employee_id INT NOT NULL,
+first_name VARCHAR(50) NOT NULL,
+last_name VARCHAR(50) NOT NULL,
+hire_date TIMESTAMP(6) NOT NULL);
+
+CREATE TABLE employee_update(
+employee_id INT NOT NULL,
+first_name VARCHAR(50) NOT NULL,
+last_name VARCHAR(50) NOT NULL,
+hire_date TIMESTAMP(6) NOT NULL);
+
+````
+
+### INSERT TRIGGER
+
+```
+CREATE OR REPLACE FUNCTION summer_employees_insert()
+RETURNS TRIGGER
+LANGUAGE PLPGSQL
+AS $$
+BEGIN
+INSERT INTO employee_summer (employee_id, first_name, last_name, hire_date)
+VALUES (NEW.employee_id, NEW.first_name, NEW.last_name, NOW());
+RETURN NEW;
+END;
+$$;
+```
+
+```
+CREATE TRIGGER employee_insert_trigger
+AFTER INSERT ON employees
+FOR EACH ROW
+EXECUTE FUNCTION summer_employees_insert();
+```
+
+INSERT INTO employees(employee_id,first_name,last_name,email,phone_number,hire_date,job_id,salary,manager_id,department_id) VALUES (207,'Will','Git','wgitz@sqltutorial.org','518.023.9771','1990-05-08',1,1300.00,205,9);
+
+![image](https://user-images.githubusercontent.com/114516225/234704847-ba969f9d-f467-478a-ac88-164cc9e85178.png)
+
+
+### UPDATE TRIGGER
+
+
+```
+CREATE OR REPLACE FUNCTION employees_update()
+RETURNS TRIGGER
+LANGUAGE PLPGSQL
+AS $$
+BEGIN
+INSERT INTO employee_update (employee_id, first_name, last_name, hire_date)
+VALUES (NEW.employee_id, NEW.first_name, NEW.last_name, NOW());
+RETURN NEW;
+END;
+$$;
+```
+
+```
+CREATE TRIGGER employee_update_trigger
+BEFORE UPDATE ON employees
+FOR EACH ROW
+EXECUTE FUNCTION employees_update();
+CREATE TRIGGER
+```
+
+UPDATE employees SET last_name = 'Gilbert' WHERE employee_id = 207;
+
+![image](https://user-images.githubusercontent.com/114516225/234704955-91194b7f-7e9c-404e-9422-143e9e8f5818.png)
+
+
 # Bibliography
 
 https://www.enterprisedb.com/postgres-tutorials/10-examples-postgresql-stored-procedures
