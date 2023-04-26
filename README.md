@@ -9,6 +9,7 @@
    * [**Function without parameters**](#function-without-parameters)
    * [**Function with parameters**](#function-with-parameters)
  * [**Procedures**](#procedures)
+ * [**Cursors**](#cursors)
  * [**Triggers**](#triggers)
    * [**Tables**](#tables)
    * [**Insert trigger**](#insert-trigger)
