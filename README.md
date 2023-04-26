@@ -139,6 +139,10 @@ In this case, this query returns all the contacts that matches the value entered
 
 # Cursors
 
+A ```CURSOR``` allows you to encapsulate a query and process each individual row at a time.Typically, you use cursors when you want to divide a large result set into parts and process each part individually. 
+
+_Query explanation_:
+
 This function that takes a parameter name of type __VARCHAR__ and returns a __TEXT__ value.
 
 Inside the block, variables are defined to store the names of the employees and their dependents. These variables are named __names, employee_name, employee_last_name, dependent_name__, and __dependent_last_name__.
@@ -182,6 +186,8 @@ _Expected output_:
 ![image](https://user-images.githubusercontent.com/114516225/234644399-215d9435-335e-418d-9494-2b1098569c20.png)
 
 # Triggers
+
+A PostgreSQL trigger is a function invoked automatically whenever an event such as insert, update, or delete occurs.
 
 ### Tables
 
