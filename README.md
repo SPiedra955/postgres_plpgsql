@@ -17,7 +17,7 @@
  
 # Introduction
 
-### PlpgSQL
+### PLpgSQL
 
 It's a procedural language that allows you to develop complex functions and stored procedures in PostgreSQL that may not be possible using plain SQL, e.g., control structures, loops, and complex computations.
 
