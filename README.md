@@ -42,11 +42,11 @@ In this project we have to use:
 
 ### Function without parameters
 
-The next function calculates the salary statistics for a table of employees. The function has three output variables: __"min_salary"__, __"max_salary"__ and __"avg_salary"__, which contain the minimum, maximum and average values of the salaries in the __"employees"__ table.
+The next function calculates the salary statistics for a table of employees. This function has three variables: __"min_salary"__, __"max_salary"__ and __"avg_salary"__, which contain the minimum, maximum and average values of the salaries in the __"employees"__ table.
 
-The function body begins with the ```BEGIN``` clause and ends with the ```END``` clause. The SQL query in the function body calculates the salary statistics using the PostgreSQL ```MIN", MAX and AVG``` function to calculate the minimum, maximum and average salary in the __"employees"__ table. The ```AVG``` function also uses ```::NUMERIC(6,1)``` to convert the result into a number with a precision of 6 digits and 1 decimal place.
+The function begins with the ```BEGIN``` clause and ends with the ```END```. The function calculates the salary statistics using the PostgreSQL ```MIN", MAX and AVG``` keywords to calculate the minimum, maximum and average salary in the __"employees"__ table. The ```AVG``` function also uses ```::NUMERIC(6,1)``` to convert the result into a number with a precision of 6 digits and 1 decimal place.
 
-The ```INTO``` clause assigns the results of the SQL query to the output variables __"min_salary"__, __"max_salary"__ and __"avg_salary"__. If no employees are found in the table, an exception is thrown with a custom error message indicating that no employees were found in the table.
+The ```INTO``` clause assigns the results of the query to the output variables __"min_salary"__, __"max_salary"__ and __"avg_salary"__. If no employees are found in the table, an exception is thrown with a error message indicating that no employees were found in the table.
 
 Finally, the function returns the values of the output variables __"min_salary"__, __"max_salary"__ and __"avg_salary"__ using the ```RETURN``` clause.
 
@@ -84,11 +84,11 @@ _Expected output use of HINT_:
 
 ### Function with parameters
 
-This function returns a result set with the columns __"country_name"__ and __"region_name"__ by means of an ```INNER JOIN```. The function takes a __"letter"__ parameter as input and returns the rows matching the country search pattern in the table __"countries"__ and __"regions"__.
+This function returns the set result of the columns  __"country_name"__ and __"region_name"__ by means of an ```INNER JOIN```. The function takes a __"letter"__ parameter as input and returns the rows matching the country search pattern in the table __"countries"__ and __"regions"__.
 
-The ```RETURNS TABLE``` clause defines the structure of the result table that the function will return. In this case, the results table has two columns: __"country_name"__ and __"region_name"__, both of type VARCHAR.
+The ```RETURNS TABLE``` clause defines the structure of the result table that the function will return. In this case, the results table comes from two columns: __"country_name"__ and __"region_name"__.
 
-Within the body of the function, the ```RETURN QUERY``` clause is used to return a result set consisting of the columns of the __"countries"__ table joined to the __"regions"__ table based on the __"region_id"__ field. The ```WHERE``` clause is used to filter the query results and search for partial matches of the search string in the __country_name__ column.
+Within the body of the function, the ```RETURN QUERY``` clause is used to return a result set consisting of the columns of the __"countries"__ table joined to the __"regions"__ table based on the __"region_id"__ field. The ```WHERE``` clause is used to find a pattern in the __country_name__ column.
 
 In short, this query returns the country in which our company has a branch office starting with the given entry and the name of the continent to which it belongs.
 
@@ -155,7 +155,7 @@ This function that takes a parameter name of type __VARCHAR__ and returns a __TE
 Inside the block, variables are defined to store the names of the employees and their dependents. These variables are named __names, employee_name, employee_last_name, dependent_name__, and __dependent_last_name__.
 
 A ```CURSOR``` is defined that will select the __first_name__ and __last_name__ of __employees__, the __first_name__ and __last_name__ of their __dependents__.
-```FETCH``` statement is for create the string concatenation.
+The ````CURSOR```` needs to be ````OPEN```` and ```CLOSE``` and inside the __''CURSOR''__ we use a ````LOOP```` to run through each result every result and create the output with the ```FETCH``` statement in order to combine the results of the query and put it in the __TEXT__ variable used to construct the output.
 ```CHR(10)``` is the ASCII value for start a new line.
 
 ````
