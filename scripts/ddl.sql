@@ -11,7 +11,7 @@ SELECT 'CREATE DATABASE sample_db' WHERE NOT EXISTS (SELECT FROM pg_database WHE
 -- Connect to the database
 -- -----------------------------------------------------
 
-\c sample database;
+\c sample_db;
 
 -- -----------------------------------------------------
 -- Tables to insert in the database
